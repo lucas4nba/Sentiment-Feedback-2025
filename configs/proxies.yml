@@ -1,0 +1,68 @@
+# Proxy Variables Configuration
+# Configuration for sentiment and uncertainty proxy variables
+
+umcsent:
+  description: "University of Michigan Consumer Sentiment Index"
+  source: "FRED"
+  frequency: "monthly"
+  transformation: "log_diff"
+  lag_structure: [0, 1, 2, 3]
+
+confboard:
+  description: "Conference Board Consumer Confidence Index"
+  source: "FRED"
+  frequency: "monthly"
+  transformation: "log_diff"
+  lag_structure: [0, 1, 2, 3]
+
+aaii:
+  description: "American Association of Individual Investors Sentiment Survey"
+  source: "AAII"
+  frequency: "weekly"
+  transformation: "demean"
+  lag_structure: [0, 1, 2, 4]
+
+bw2006:
+  description: "Baker-Wurgler Sentiment Index (2006)"
+  source: "academic"
+  frequency: "annual"
+  transformation: "standardize"
+  lag_structure: [0, 1]
+
+putcall:
+  description: "Put-Call Ratio"
+  source: "CBOE"
+  frequency: "daily"
+  transformation: "log_diff"
+  lag_structure: [0, 1, 5, 10]
+
+fears:
+  description: "FEARS Index"
+  source: "academic"
+  frequency: "daily"
+  transformation: "demean"
+  lag_structure: [0, 1, 5, 10]
+
+news_ravenpack:
+  description: "RavenPack News Sentiment"
+  source: "RavenPack"
+  frequency: "daily"
+  transformation: "standardize"
+  lag_structure: [0, 1, 5, 10]
+
+stocktwits:
+  description: "StockTwits Sentiment"
+  source: "StockTwits"
+  frequency: "daily"
+  transformation: "demean"
+  lag_structure: [0, 1, 5, 10]
+
+# Global settings
+settings:
+  data_dir: "${DATA_DIR}"
+  output_dir: "build"
+  date_range:
+    start: "1990-01-01"
+    end: "2023-12-31"
+  missing_data: "interpolate"
+  outlier_treatment: "winsorize"

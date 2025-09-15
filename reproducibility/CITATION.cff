@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Author1"
+    given-names: "First"
+    orcid: "https://orcid.org/0000-0000-0000-0000"
+  - family-names: "Author2"
+    given-names: "Second"
+    orcid: "https://orcid.org/0000-0000-0000-0001"
+title: "Sentiment Feedback in Equity Markets: Asymmetries, Retail Heterogeneity, and Structural Calibration"
+version: 1.0.0
+date-released: 2024-01-27
+url: "https://github.com/username/sentiment-feedback-analysis"
+repository-code: "https://github.com/username/sentiment-feedback-analysis"
+license: MIT
+keywords:
+  - sentiment
+  - equity markets
+  - retail investors
+  - structural calibration
+  - impulse response functions
+  - GMM estimation
+abstract: |
+  This repository contains the complete analysis for "Sentiment Feedback in Equity Markets: 
+  Asymmetries, Retail Heterogeneity, and Structural Calibration". The project implements a 
+  reproducible research pipeline with automated data processing, analysis, and paper compilation.
+  
+  Key features:
+  - Impulse response function estimation
+  - Structural calibration using GMM
+  - Panel regression analysis with robust standard errors
+  - Portfolio performance evaluation
+  - Comprehensive robustness testing
+  
+  The analysis examines how retail investor sentiment affects equity markets, with particular
+  focus on asymmetries across volatility states and heterogeneity in retail investor behavior.

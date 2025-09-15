@@ -1,0 +1,15 @@
+irf:
+  horizons: [1, 3, 6, 12]
+  type: level   # 'level' or 'cum'
+gmm:
+  draws: 2000
+  ci_level: 0.95
+  rho_bounds: [ -0.999, 0.9999 ]
+  optimizer: 'L-BFGS-B'
+bootstrap:
+  method: 'parametric_irf' # or 'time_block'
+  block_length_months: 24
+reporting:
+  censor_half_life_if_rho_ci_hits_one: true
+plots:
+  style: 'paper'

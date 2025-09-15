@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Sneller"
+    given-names: "Lucas"
+title: "Sentiment Feedback in Equity Markets"
+version: "v1.0.0"
+date-released: "2025-09-01"
+license: "MIT"
+preferred-citation:
+  type: "preprint"
+  title: "Sentiment Feedback in Equity Markets: Asymmetries, Retail Heterogeneity, and Structural Calibration"
+  authors:
+    - family-names: "Sneller"
+      given-names: "Lucas"
+  doi: "10.48550/arXiv.XXXX.XXXXX"
+  url: "https://arxiv.org/abs/XXXX.XXXXX"
+  date: "2025-09-01"
+  venue: "arXiv"

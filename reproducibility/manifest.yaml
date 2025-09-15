@@ -1,0 +1,238 @@
+# Manifest: Sentiment Feedback Analysis Dependencies
+# Maps each output figure/table to its exact dependencies
+
+metadata:
+  project: "Sentiment Feedback in Equity Markets"
+  version: "1.0"
+  created: "2024-01-27"
+  description: "Dependency mapping for reproducible research pipeline"
+
+# Data dependencies
+data_files:
+  panel_monthly:
+    path: "project_files/build/panel_monthly.parquet"
+    scripts: ["project_files/src/build_panel.py"]
+    configs: ["project_files/configs/baseline.yml"]
+    inputs: ["project_files/Data/raw/crsp_monthly.csv", "project_files/Data/raw/sentiment_data.csv"]
+    
+  sentiment_monthly:
+    path: "project_files/build/sentiment_monthly.parquet"
+    scripts: ["project_files/src/build_sentiment.py"]
+    configs: ["project_files/configs/baseline.yml"]
+    inputs: ["project_files/Data/raw/consumer_sentiment.csv"]
+    
+  option_iv_monthly:
+    path: "project_files/build/option_iv_monthly.parquet"
+    scripts: ["project_files/src/build_option_iv.py"]
+    configs: ["project_files/configs/baseline.yml"]
+    inputs: ["project_files/Data/raw/vix_data.csv", "project_files/Data/raw/option_iv.csv"]
+    
+  proxies:
+    path: "project_files/build/proxies/"
+    scripts: ["project_files/scripts/generate_retailera_breadth.py", "project_files/scripts/generate_miller_breadth_flows.py"]
+    configs: ["project_files/configs/proxies.yml"]
+    inputs: ["project_files/Data/retail_proxy/robinhood_data.parquet"]
+
+# Analysis outputs
+analysis_outputs:
+  irf_gmm:
+    id: irf_gmm
+    scripts: [scripts/fit_irf_gmm.py]
+    configs: [configs/irf_gmm.yml]
+    produces:
+      - tables_figures/final_figures/structural_fit_irf.png
+      - tables_figures/latex/table_geometric_irf_fit.tex
+    dependencies: ["panel_monthly", "sentiment_monthly"]
+    
+  panel_jackknife:
+    id: panel_jackknife
+    scripts: [scripts/panel_jackknife.py]
+    configs: [configs/panel.yml]
+    produces:
+      - tables_figures/latex/table_panel_jackknife.tex
+    dependencies: ["panel_monthly", "sentiment_monthly", "proxies"]
+    
+  port_alpha:
+    id: port_alpha
+    scripts: [scripts/port_alpha.py]
+    configs: [configs/portfolio.yml]
+    produces:
+      - tables_figures/latex/table_portfolio_alpha.tex
+      - tables_figures/final_figures/portfolio_performance.pdf
+    dependencies: ["panel_monthly", "sentiment_monthly"]
+    
+  option_listing_event:
+    id: option_listing_event
+    scripts: [scripts/option_listing_event.py]
+    configs: [configs/event_study.yml]
+    produces:
+      - tables_figures/latex/table_option_listing_effects.tex
+      - tables_figures/final_figures/option_listing_event_study.pdf
+    dependencies: ["panel_monthly", "option_iv_monthly"]
+    
+  copy_figures:
+    id: copy_figures
+    scripts: [scripts/copy_figures.py]
+    configs: []
+    produces:
+      - Paperfinal91225/figures/
+    dependencies: ["all_figures"]
+
+# Figures
+figures:
+  irf_grid:
+    path: "project_files/tables_figures/final_figures/irf_grid.pdf"
+    scripts: ["scripts/generate_irf_grid.py", "scripts/plot_irf_grid.py"]
+    configs: ["configs/baseline.yml"]
+    dependencies: ["irf_estimates"]
+    description: "Grid of impulse response functions across proxies and horizons"
+    
+  irf_forest:
+    path: "project_files/tables_figures/final_figures/irf_forest.pdf"
+    scripts: ["scripts/generate_irf_forest.py", "scripts/plot_irf_forest.py"]
+    configs: ["configs/baseline.yml"]
+    dependencies: ["irf_estimates"]
+    description: "Forest plot of IRF coefficients with confidence intervals"
+    
+  portfolio_performance:
+    path: "project_files/tables_figures/final_figures/portfolio_performance.pdf"
+    scripts: ["scripts/generate_portfolio_core.py", "scripts/plot_portfolio.py"]
+    configs: ["configs/baseline.yml"]
+    dependencies: ["panel_results"]
+    description: "Portfolio performance metrics and Sharpe ratios"
+    
+  retail_coverage:
+    path: "project_files/tables_figures/final_figures/retail_coverage.pdf"
+    scripts: ["scripts/generate_retail_coverage.py"]
+    configs: ["configs/baseline.yml"]
+    dependencies: ["proxies"]
+    description: "Retail investor coverage over time"
+    
+  robustness_heatmap:
+    path: "project_files/tables_figures/final_figures/robustness_heatmap.pdf"
+    scripts: ["scripts/generate_robustness_irfs.py"]
+    configs: ["configs/baseline.yml"]
+    dependencies: ["irf_estimates"]
+    description: "Robustness analysis heatmap across specifications"
+
+# Tables
+tables:
+  baseline_interactions:
+    path: "project_files/tables_figures/latex/T_baseline_interactions.tex"
+    scripts: ["scripts/generate_proxy_interactions.py"]
+    configs: ["configs/baseline.yml"]
+    dependencies: ["panel_results"]
+    description: "Main panel regression results with interactions"
+    
+  kappa_rho_body:
+    path: "project_files/tables_figures/latex/T_kappa_rho_body.tex"
+    scripts: ["scripts/generate_kappa_rho_body_table.py"]
+    configs: ["configs/baseline.yml"]
+    dependencies: ["kappa_rho_estimates"]
+    description: "Structural calibration results (κ and ρ parameters)"
+    
+  portfolio_sorts:
+    path: "project_files/tables_figures/latex/T_portfolio_sorts.tex"
+    scripts: ["scripts/generate_portfolio_metrics_table.py"]
+    configs: ["configs/baseline.yml"]
+    dependencies: ["panel_results"]
+    description: "Portfolio performance and alpha estimates"
+    
+  irf_peaks_half_life:
+    path: "project_files/tables_figures/latex/T_irf_peaks_half_life.tex"
+    scripts: ["scripts/generate_irf_peaks_half_life_table.py"]
+    configs: ["configs/baseline.yml"]
+    dependencies: ["irf_estimates"]
+    description: "IRF peak effects and half-life statistics"
+    
+  proxy_interactions:
+    path: "project_files/tables_figures/latex/T_proxy_interactions.tex"
+    scripts: ["scripts/generate_proxy_interactions.py"]
+    configs: ["configs/baseline.yml"]
+    dependencies: ["panel_results"]
+    description: "Cross-proxy interaction effects"
+    
+  vix_interactions:
+    path: "project_files/tables_figures/latex/T_vix_interactions.tex"
+    scripts: ["scripts/generate_breadth_vix_interactions_table.py"]
+    configs: ["configs/baseline.yml"]
+    dependencies: ["panel_results"]
+    description: "VIX interaction effects across volatility states"
+
+# LaTeX paper compilation
+paper:
+  main_pdf:
+    path: "Paperfinal91225/main.pdf"
+    scripts: ["latexmk -pdf main.tex"]
+    configs: ["Paperfinal91225/main.tex", "Paperfinal91225/PRIMEarxiv.sty"]
+    dependencies: ["all_tables", "all_figures"]
+    description: "Compiled LaTeX paper"
+    
+  all_tables:
+    paths: ["project_files/tables_figures/latex/*.tex"]
+    dependencies: ["baseline_interactions", "kappa_rho_body", "portfolio_sorts", "irf_peaks_half_life", "proxy_interactions", "vix_interactions"]
+    
+  all_figures:
+    paths: ["project_files/tables_figures/final_figures/*.pdf"]
+    dependencies: ["irf_grid", "irf_forest", "portfolio_performance", "retail_coverage", "robustness_heatmap"]
+
+# Build targets mapping
+build_targets:
+  env:
+    description: "Check environment and dependencies"
+    scripts: ["python -c 'import pandas, numpy, scipy, statsmodels, matplotlib'"]
+    
+  data:
+    description: "Build all data files"
+    dependencies: ["panel_monthly", "sentiment_monthly", "option_iv_monthly", "proxies"]
+    
+  irf:
+    description: "Estimate impulse response functions"
+    dependencies: ["irf_estimates"]
+    
+  gmm:
+    description: "Structural calibration (κ-ρ GMM)"
+    dependencies: ["kappa_rho_estimates"]
+    
+  panel:
+    description: "Panel regression analysis"
+    dependencies: ["panel_results"]
+    
+  ports:
+    description: "Portfolio analysis"
+    dependencies: ["panel_results"]
+    
+  figures:
+    description: "Generate all figures"
+    dependencies: ["irf_grid", "irf_forest", "portfolio_performance", "retail_coverage", "robustness_heatmap"]
+    
+  tables:
+    description: "Generate all tables"
+    dependencies: ["baseline_interactions", "kappa_rho_body", "portfolio_sorts", "irf_peaks_half_life", "proxy_interactions", "vix_interactions"]
+    
+  copy_figures:
+    description: "Copy figures to LaTeX directory"
+    scripts: ["scripts/copy_figures.py"]
+    dependencies: ["all_figures"]
+    
+  all:
+    description: "Complete reproduction pipeline"
+    dependencies: ["env", "data", "irf", "gmm", "panel", "ports", "figures", "tables", "copy_figures"]
+
+# Validation checks
+validation:
+  data_quality:
+    scripts: ["scripts/validate_data.py"]
+    checks: ["coverage_stats", "missing_values", "correlation_matrix"]
+    
+  output_validation:
+    scripts: ["scripts/validate_outputs.py"]
+    checks: ["file_existence", "checksum_verification", "range_checks"]
+    
+  figure_linting:
+    scripts: ["scripts/lint_figures.py"]
+    checks: ["resolution", "fonts", "colors", "accessibility"]
+    
+  latex_validation:
+    scripts: ["tools/check_tex_refs.py"]
+    checks: ["missing_references", "undefined_labels", "broken_citations"]

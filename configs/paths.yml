@@ -1,0 +1,26 @@
+# Path Configuration
+# Centralized path definitions for the research project
+
+# Raw data directories
+RAW_ALTSENT: Data/raw/altsent
+RAW_DATA: Data/raw
+DATA: Data
+
+# Build and output directories
+BUILD: build
+FIGS: tables_figures/final_figures
+LATEX: tables_figures/latex
+TABLES: tables_figures/tables
+
+# Analysis directories
+ANALYSIS: analysis
+PROXIES: analysis/proxies
+THEORY: analysis/theory
+QUERIES: analysis/queries
+
+# Submission directories
+SUBMISSION: submission
+OVERLEAF: overleaf_submission
+
+# Log directories
+LOGS: logs
